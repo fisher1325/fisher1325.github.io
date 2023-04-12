@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -11,9 +11,24 @@
     <script type="text/javascript">
 
         var loc = [];
-        loc.push([121.4388370513916, 31.145632029496642]);
-        loc.push([121.45153999328613, 31.144309764380708]);
-        loc.push([121.44330024719238, 31.131820795519186]);
+        loc.push([122.088967, 30.126803]);//0
+        loc.push([122.114135, 30.089459]);//1
+        loc.push([122.094981, 30.117851]);//2
+        loc.push([122.076796, 30.137053]);//3
+        loc.push([122.100299, 30.112304]);//4
+        loc.push([122.106223, 30.105592]);//5
+        loc.push([122.113295, 30.131352]);//6
+        loc.push([122.083258, 30.138884]);//7
+        loc.push([122.113156, 30.128548]);//8
+        loc.push([122.088262, 30.124125]);//9
+        loc.push([122.093976, 30.116138]);//10
+        loc.push([122.10053, 30.111969]);//11
+        loc.push([122.104924, 30.116817]);//12
+        loc.push([122.118733, 30.123575]);//13
+        loc.push([122.09031, 30.12205]);//14
+        loc.push([121.426686, 31.162705]);//15  test_company
+        loc.push([121.412216, 31.149628]);//16  test_home
+
 
     function getLocation() {
         var options = {
@@ -32,32 +47,38 @@
 
     // 成功时的回调函数
     // 第一步获取定位成功返回的经纬度数据，然后结合百度那边提供的接口进行具体位置的转换，最后还有一个数据提交的方法，要跟自己的业务操作了
-    function onSuccess(position) {
-        // 返回用户位置
-        // 经度
-        var longitude = position.coords.longitude;
-        // 纬度
-        var latitude = position.coords.latitude;
-        //alert('您的当前地址的经纬度：经度' + longitude + '，纬度' + latitude);
-        // 根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
-        var map = new BMap.Map("allmap");
-        var point = new BMap.Point(longitude, latitude);
-        var gc = new BMap.Geocoder();
-        gc.getLocation(point, function (rs) {
-            var addComp = rs.addressComponents;
-            //alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
-        });
-        // 这里后面可以写你的后续操作了
-        var distance = 1000, road = 0;
-        for (var i = 0; i < loc.length; i++) {
-            var sub = (loc[i][0] - longitude) + (loc[i][1] - latitude);
-            sub = Math.abs(sub);
-            if (sub < distance) {
-                distance = sub;
-                road = i;
+        function onSuccess(position) {
+            // 返回用户位置
+            // 经度
+            var longitude = position.coords.longitude;
+            // 纬度
+            var latitude = position.coords.latitude;
+            //alert('您的当前地址的经纬度：经度' + longitude + '，纬度' + latitude);
+            // 根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
+            var map = new BMap.Map("allmap");
+            var point = new BMap.Point(longitude, latitude);
+            var gc = new BMap.Geocoder();
+            gc.getLocation(point, function (rs) {
+                var addComp = rs.addressComponents;
+                //alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+            });
+            // 这里后面可以写你的后续操作了
+            var distance = 1000, road = 0;
+            for (var i = 0; i < loc.length; i++) {
+                var sub = (loc[i][0] - longitude) + (loc[i][1] - latitude);
+                sub = Math.abs(sub);
+                if (sub < distance) {
+                    distance = sub;
+                    road = i;
+                }
             }
-        }
-        window.location.href = "https://fisher1325.github.io/road" + road + ".html";
+            if (longitude - loc[road][0] < 1 / 111 || latitude - loc[road][1] < 1 / 111) {
+                alert("区域超出范围！") ；
+                
+            }
+            else {
+                window.location.href = "https://fisher1325.github.io/road" + road + ".html";
+            }
     }
 
     // 失败时的回调函数
