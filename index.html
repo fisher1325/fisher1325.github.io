@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title></title>
+</head>
+<body>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=5vZCe9fghTCCyrGxNbkRzCiVG5x9NXpz"></script>
+    <script type="text/javascript">
+
+        var loc = [];
+        loc.push([120, 30]);
+        loc.push([125, 45]);//18
+        loc.push([130, 50]);
+        loc.push([135, 55]);
+
+    function getLocation() {
+        var options = {
+            enableHighAccuracy: true,
+            maximumAge: 1000
+        };
+        //alert('获取位置信息开始--------->');
+        if (navigator.geolocation) {
+            // 走到这里说明，浏览器支持geolocation，参数里有两个回调函数，一个是定位成功后的处理操作，一个是定位失败后的处理操作，另外一个参数没有研究过
+            navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+        } else {
+            // 否则浏览器不支持geolocation
+            alert('您的浏览器不支持地理位置定位！');
+        }
+    }
+
+    // 成功时的回调函数
+    // 第一步获取定位成功返回的经纬度数据，然后结合百度那边提供的接口进行具体位置的转换，最后还有一个数据提交的方法，要跟自己的业务操作了
+    function onSuccess(position) {
+        // 返回用户位置
+        // 经度
+        var longitude = position.coords.longitude;
+        // 纬度
+        var latitude = position.coords.latitude;
+        alert('您的当前地址的经纬度：经度' + longitude + '，纬度' + latitude);
+        // 根据经纬度获取地理位置，不太准确，获取城市区域还是可以的
+        var map = new BMap.Map("allmap");
+        var point = new BMap.Point(longitude, latitude);
+        var gc = new BMap.Geocoder();
+        gc.getLocation(point, function (rs) {
+            var addComp = rs.addressComponents;
+            alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+        });
+        // 这里后面可以写你的后续操作了
+        var distance = 1000, road = 0;
+        for (var i = 0; i < loc.length; i++) {
+            var sub = (loc[i][0] - longitude) + (loc[i][1] - latitude);
+            sub = Math.abs(sub);
+            if (sub < distance) {
+                distance = sub;
+                road = i;
+            }
+        }
+        window.location.href = "C:/Users/86189/source/repos/QRcode/road" + road + ".html";
+    }
+
+    // 失败时的回调函数
+    // 这里是错误提示信息
+    function onError(error) {
+        switch (error.code) {
+            case 1:
+                alert("位置服务被拒绝！");
+                break;
+            case 2:
+                alert("暂时获取不到位置信息！");
+                break;
+            case 3:
+                alert("获取信息超时！");
+                break;
+            case 4:
+                alert("未知错误！");
+                break;
+        }
+    }
+
+    // 页面载入时请求获取当前地理位置
+    window.onload = function () {
+        // html5获取地理位置
+        getLocation();
+        };
+    </script>
+
+</body>
+</html>
