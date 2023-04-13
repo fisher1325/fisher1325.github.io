@@ -64,6 +64,8 @@
             //});
             // 这里后面可以写你的后续操作了
 
+            alert(latitude, longitude);
+            
             var distance = 1000, road = 0;
             for (var i = 0; i < loc.length; i++) {
                 var dis = GetDistance(latitude, longitude, loc[i][1], loc[i][0]);
@@ -71,6 +73,7 @@
                     distance = dis;
                     road = i;
                 }
+                alert(dis);
             }
 
             function Rad(d) {
