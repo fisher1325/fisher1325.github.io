@@ -72,7 +72,7 @@
                     road = i;
                 }
             }
-            if (longitude - loc[road][0] > 1 / 111 || latitude - loc[road][1] > 1 / 111) {
+            if (Math.sqrt(Math.pow(longitude - loc[road][0], 2) + Math.pow(latitude - loc[road][1], 2))>1/111) {
                 alert("区域超出范围！");
                 window.opener = null;
                 window.close();
