@@ -58,11 +58,12 @@
             var map = new BMap.Map("allmap");
             var point = new BMap.Point(longitude, latitude);
             //var gc = new BMap.Geocoder();
-            //gc.getLocation(point, function (rs) {
+            //gc.getLocation(point, function (rs){
                 //var addComp = rs.addressComponents;
                 //alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
             //});
             // 这里后面可以写你的后续操作了
+
             var distance = 1000, road = 0;
             for (var i = 0; i < loc.length; i++) {
                 var sub = (loc[i][0] - longitude) + (loc[i][1] - latitude);
@@ -72,11 +73,29 @@
                     road = i;
                 }
             }
-            if (Math.sqrt(Math.pow(longitude - loc[road][0], 2) + Math.pow(latitude - loc[road][1], 2))>1/111) {
+
+            function Rad(d) {
+                return d * Math.PI / 180.0;
+            }
+
+            function GetDistance(lat1, lng1, lat2, lng2) {
+
+                var radLat1 = Rad(lat1);
+                var radLat2 = Rad(lat2);
+                var a = radLat1 - radLat2;
+                var b = Rad(lng1) - Rad(lng2);
+                var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+                    Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+                s = s * 6378.137;
+                s = Math.round(s * 10000) / 10000; //输出为公里
+                //s=s.toFixed(4);
+                return s;
+            }
+
+            if (GetDistance(latitude, longitude, loc[road][1], loc[0])>1) {
                 alert("区域超出范围！");
                 window.opener = null;
                 window.close();
-                
             }
             else {
                 window.location.href = "https://fisher1325.github.io/road" + road + ".html";
